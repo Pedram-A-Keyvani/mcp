@@ -9,10 +9,8 @@ import { APP_CONFIG } from '../../app.config';
   template: `
     @if (command(); as cmd) {
       <div class="preview">
-        <div>{{ cmd.method }} {{ cmd.path }}</div>
-        <div>{{ cmd.refinement }}</div>
         <button (click)="execute()" [disabled]="portalState.running()">
-          {{ portalState.running() ? 'Running…' : 'Run' }}
+          {{ portalState.running() ? 'Processing…' : 'Go' }}
         </button>
       </div>
     }

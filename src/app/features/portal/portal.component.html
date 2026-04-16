@@ -24,23 +24,14 @@
     <app-refine-input />
   </section>
 
-  <section>
-    <h3 class="step-label">
-      <span class="step-num">4</span>
-      Command
-    </h3>
-    <app-command-preview />
-  </section>
+  <app-command-preview />
 
   <section>
     <h3 class="step-label">
       <span class="step-num">5</span>
       Result
     </h3>
-    <app-result-table
-      [data]="portalState.result()"
-      [loading]="portalState.running()"
-      [error]="portalState.error()" />
+    <app-result-table [data]="portalState.result()" [loading]="portalState.running()" [error]="portalState.error()" />
   </section>
 
 </div>
