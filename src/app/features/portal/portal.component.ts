@@ -4,6 +4,8 @@ import { ActionBarComponent } from '../components/action-bar.component';
 import { BadgeBarComponent } from '../components/badge-bar.component';
 import { RefineInputComponent } from '../components/refine-input.component';
 import { CommandPreviewComponent } from '../components/command-preview.component';
+import { ResultTableComponent } from '../components/result-table.component';
+import { portalState } from '../portal.state';
 
 @Component({
   selector: 'app-portal',
@@ -14,10 +16,13 @@ import { CommandPreviewComponent } from '../components/command-preview.component
     BadgeBarComponent,
     ActionBarComponent,
     RefineInputComponent,
-    CommandPreviewComponent
+    CommandPreviewComponent,
+    ResultTableComponent
   ]
 })
 export class PortalComponent implements OnInit {
+
+  portalState = portalState;
 
   private loader = inject(OpenApiLoaderService);
 

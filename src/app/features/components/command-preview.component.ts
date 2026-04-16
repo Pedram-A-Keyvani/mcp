@@ -11,12 +11,16 @@ import { APP_CONFIG } from '../../app.config';
       <div class="preview">
         <div>{{ cmd.method }} {{ cmd.path }}</div>
         <div>{{ cmd.refinement }}</div>
-        <button (click)="execute()">Run</button>
+        <button (click)="execute()" [disabled]="portalState.running()">
+          {{ portalState.running() ? 'Running…' : 'Run' }}
+        </button>
       </div>
     }
   `
 })
 export class CommandPreviewComponent {
+
+  portalState = portalState;
 
   constructor(@Inject(APP_CONFIG) private config: any) { }
 
@@ -35,26 +39,60 @@ export class CommandPreviewComponent {
     const cmd = this.command();
     if (!cmd) return;
 
-    if (cmd.method.toUpperCase() === 'GET') {
-      const url = new URL(`/api/${cmd.path}`, window.location.origin);
-      if (cmd.refinement) {
-        url.searchParams.set('q', cmd.refinement);
-      }
-      await fetch(url.toString(), {
-        method: cmd.method,
-        headers: {
-          'authorization': `Bearer ${this.config.token}`
+    // Reset prior state
+    portalState.running.set(true);
+    portalState.error.set(null);
+    portalState.result.set(null);
+
+    try {
+      let res: Response;
+
+      if (cmd.method.toUpperCase() === 'GET') {
+        const url = new URL(`/api/${cmd.path}`, window.location.origin);
+        if (cmd.refinement) {
+          url.searchParams.set('q', cmd.refinement);
         }
-      });
-    } else {
-      await fetch(`/api/${cmd.path}`, {
-        method: cmd.method,
-        headers: {
-          'authorization': `Bearer ${this.config.token}`
-        },
-        body: cmd.refinement
-      });
+        res = await fetch(url.toString(), {
+          method: cmd.method,
+          headers: {
+            'authorization': `Bearer ${this.config.token}`
+          }
+        });
+      } else {
+        res = await fetch(`/api/${cmd.path}`, {
+          method: cmd.method,
+          headers: {
+            'authorization': `Bearer ${this.config.token}`,
+            'content-type': 'application/json'
+          },
+          body: cmd.refinement || undefined
+        });
+      }
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        throw new Error(`${res.status} ${res.statusText}${body ? ` — ${body.slice(0, 200)}` : ''}`);
+      }
+
+      const payload = await this.parseBody(res);
+      portalState.result.set(payload);
+
+    } catch (e: any) {
+      portalState.error.set(e?.message ?? String(e));
+    } finally {
+      portalState.running.set(false);
     }
-    console.log('EXEC:', cmd);
+  }
+
+  /** Parse by content-type; fall back to text for non-JSON responses. */
+  private async parseBody(res: Response): Promise<unknown> {
+    const ct = res.headers.get('content-type') ?? '';
+    if (ct.includes('application/json')) return res.json();
+
+    const text = await res.text();
+    if (!text) return null;
+
+    // Some APIs return JSON without the header — try opportunistically.
+    try { return JSON.parse(text); } catch { return text; }
   }
 }

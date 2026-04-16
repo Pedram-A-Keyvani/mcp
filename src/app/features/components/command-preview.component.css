@@ -73,3 +73,16 @@
   transform: translateY(0) scale(0.97);
   transition-duration: 0.06s;
 }
+
+.preview button:disabled {
+  cursor: wait;
+  filter: saturate(0.6) brightness(0.9);
+  box-shadow: none;
+  transform: none;
+}
+
+.preview button:disabled:hover {
+  transform: none;
+  filter: saturate(0.6) brightness(0.9);
+  box-shadow: none;
+}

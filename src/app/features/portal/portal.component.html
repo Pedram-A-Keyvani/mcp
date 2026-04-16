@@ -32,4 +32,15 @@
     <app-command-preview />
   </section>
 
+  <section>
+    <h3 class="step-label">
+      <span class="step-num">5</span>
+      Result
+    </h3>
+    <app-result-table
+      [data]="portalState.result()"
+      [loading]="portalState.running()"
+      [error]="portalState.error()" />
+  </section>
+
 </div>
