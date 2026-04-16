@@ -1,0 +1,53 @@
+/* ─────────────────────────────────────────────────────
+   action-bar.component.css
+   Action selection buttons
+   ───────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background   0.2s ease,
+    border-color 0.2s ease,
+    box-shadow   0.2s ease,
+    color        0.2s ease,
+    transform    0.15s var(--ease-spring);
+}
+
+.actions button:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-hot);
+  box-shadow: 0 0 20px -8px rgba(99, 140, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.actions button:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.06s;
+}
+
+/* Selected state */
+.actions button.selected {
+  background: rgba(99, 140, 255, 0.12);
+  border-color: var(--accent);
+  color: var(--accent-hot);
+  box-shadow: 0 0 24px -8px rgba(99, 140, 255, 0.15);
+}

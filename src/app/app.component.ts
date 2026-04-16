@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { PortalComponent } from './features/portal/portal.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  standalone: true,
+  imports: [PortalComponent],
+  template: `<app-portal></app-portal>`
 })
 export class AppComponent {
-  title = 'mcp';
+
 }

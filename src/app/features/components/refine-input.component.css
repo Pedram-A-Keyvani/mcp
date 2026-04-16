@@ -1,0 +1,36 @@
+/* ─────────────────────────────────────────────────────
+   refine-input.component.css
+   Refinement text input
+   ───────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+}
+
+.refine {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  outline: none;
+  transition:
+    border-color 0.3s var(--ease-out),
+    box-shadow   0.3s var(--ease-out);
+}
+
+.refine::placeholder {
+  color: var(--text-dim);
+  font-weight: 300;
+}
+
+.refine:focus {
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 3px var(--accent-soft),
+    0 0 40px -12px rgba(99, 140, 255, 0.12);
+}

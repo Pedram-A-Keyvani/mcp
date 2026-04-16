@@ -1,0 +1,79 @@
+/* ─────────────────────────────────────────────────────
+   badge-bar.component.css
+   Domain selection chips
+   ───────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badges button {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background   0.2s ease,
+    border-color 0.2s ease,
+    box-shadow   0.2s ease,
+    transform    0.15s var(--ease-spring),
+    color        0.2s ease;
+}
+
+/* Radial under-glow */
+.badges button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle at 50% 120%,
+    var(--accent-soft) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.badges button:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-hot);
+  box-shadow: 0 0 24px -8px rgba(99, 140, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.badges button:hover::before {
+  opacity: 1;
+}
+
+.badges button:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: 0.06s;
+}
+
+/* Selected state — apply via [class.selected] or ngClass */
+.badges button.selected {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 20px -4px rgba(99, 140, 255, 0.35);
+}
+
+.badges button.selected::before {
+  opacity: 0;
+}
