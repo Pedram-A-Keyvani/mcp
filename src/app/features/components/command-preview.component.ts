@@ -1,5 +1,6 @@
 import { Component, computed, Inject } from '@angular/core';
 import { portalState } from '../portal.state';
+import { APP_CONFIG } from '../../app.config';
 
 @Component({
   selector: 'app-command-preview',
@@ -17,7 +18,7 @@ import { portalState } from '../portal.state';
 })
 export class CommandPreviewComponent {
 
-  constructor(@Inject('APP_CONFIG') private config: any) { }
+  constructor(@Inject(APP_CONFIG) private config: any) { }
 
   command = computed(() => {
     const a = portalState.action();
