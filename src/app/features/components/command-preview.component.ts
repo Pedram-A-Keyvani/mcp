@@ -7,13 +7,40 @@ import { APP_CONFIG } from '../../app.config';
   standalone: true,
   styleUrl: './command-preview.component.css',
   template: `
-    @if (command(); as cmd) {
-      <div class="preview">
-        <button (click)="execute()" [disabled]="portalState.running()">
-          {{ portalState.running() ? 'Processing…' : 'Go' }}
+    <div class="req-bar" [class.req-bar--idle]="!command()">
+
+      @if (command(); as cmd) {
+        <span class="path">What is your request?</span>
+
+        <span class="divider"></span>
+
+        <input
+          class="refine"
+          [value]="portalState.refinement()"
+          (input)="onRefine($any($event.target).value)"
+          (keydown.enter)="execute()"
+          [placeholder]="refinePlaceholder(cmd.method)" />
+
+        <button
+          class="run"
+          (click)="execute()"
+          [disabled]="portalState.running()">
+          @if (portalState.running()) {
+            <span class="spinner"></span>
+            <span>Processing</span>
+          } @else {
+            <span>Go</span>
+            <span class="kbd">↵</span>
+          }
         </button>
-      </div>
-    }
+      } @else {
+        <span class="hint">
+          <span class="hint-dot"></span>
+          Select a domain, then an action
+        </span>
+      }
+
+    </div>
   `
 })
 export class CommandPreviewComponent {
@@ -27,17 +54,25 @@ export class CommandPreviewComponent {
     if (!a) return null;
 
     return {
-      method: a.method,
+      method: a.method?.toUpperCase() ?? 'GET',
       path: a.path,
-      refinement: portalState.refinement()
     };
   });
 
+  onRefine(value: string) {
+    portalState.refinement.set(value);
+  }
+
+  refinePlaceholder(method: string): string {
+    return '';
+  }
+
   async execute() {
     const cmd = this.command();
-    if (!cmd) return;
+    if (!cmd || portalState.running()) return;
 
-    // Reset prior state
+    const refinement = portalState.refinement();
+
     portalState.running.set(true);
     portalState.error.set(null);
     portalState.result.set(null);
@@ -45,11 +80,9 @@ export class CommandPreviewComponent {
     try {
       let res: Response;
 
-      if (cmd.method.toUpperCase() === 'GET') {
+      if (cmd.method === 'GET') {
         const url = new URL(`/api/${cmd.path}`, window.location.origin);
-        if (cmd.refinement) {
-          url.searchParams.set('q', cmd.refinement);
-        }
+        if (refinement) url.searchParams.set('q', refinement);
         res = await fetch(url.toString(), {
           method: cmd.method,
           headers: {
@@ -63,13 +96,15 @@ export class CommandPreviewComponent {
             'authorization': `Bearer ${this.config.token}`,
             'content-type': 'application/json'
           },
-          body: cmd.refinement || undefined
+          body: refinement || undefined
         });
       }
 
       if (!res.ok) {
         const body = await res.text().catch(() => '');
-        throw new Error(`${res.status} ${res.statusText}${body ? ` — ${body.slice(0, 200)}` : ''}`);
+        throw new Error(
+          `${res.status} ${res.statusText}${body ? ` — ${body.slice(0, 200)}` : ''}`
+        );
       }
 
       const payload = await this.parseBody(res);
@@ -82,15 +117,12 @@ export class CommandPreviewComponent {
     }
   }
 
-  /** Parse by content-type; fall back to text for non-JSON responses. */
   private async parseBody(res: Response): Promise<unknown> {
     const ct = res.headers.get('content-type') ?? '';
     if (ct.includes('application/json')) return res.json();
 
     const text = await res.text();
     if (!text) return null;
-
-    // Some APIs return JSON without the header — try opportunistically.
     try { return JSON.parse(text); } catch { return text; }
   }
 }

@@ -1,37 +1,40 @@
-<div class="layout">
+<div class="shell">
 
-  <section>
-    <h3 class="step-label">
-      <span class="step-num">1</span>
-      Domain
-    </h3>
-    <app-badge-bar />
-  </section>
+  <aside class="sidebar">
+    <header class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-name">NeLS</span>
+      <span class="brand-tag">explorer</span>
+    </header>
 
-  <section>
-    <h3 class="step-label">
-      <span class="step-num">2</span>
-      Action
-    </h3>
-    <app-action-bar />
-  </section>
+    <nav class="nav">
+      <div class="nav-group">
+        <h4 class="nav-title">Domains</h4>
+        <app-badge-bar />
+      </div>
+    </nav>
+  </aside>
 
-  <section>
-    <h3 class="step-label">
-      <span class="step-num">3</span>
-      Refinement
-    </h3>
-    <app-refine-input />
-  </section>
+  <main class="workspace">
 
-  <app-command-preview />
+    @if (portalState.badge()) {
+      <section class="actions-pane">
+        <h4 class="pane-title">
+          <span>Actions</span>
+          <span class="pane-sep"></span>
+        </h4>
+        <app-action-bar />
+      </section>
+    }
 
-  <section>
-    <h3 class="step-label">
-      <span class="step-num">5</span>
-      Result
-    </h3>
-    <app-result-table [data]="portalState.result()" [loading]="portalState.running()" [error]="portalState.error()" />
-  </section>
+    <app-command-preview />
+
+    <div class="result-pane">
+      <app-result-table
+        [data]="portalState.result()"
+        [loading]="portalState.running()"
+        [error]="portalState.error()" />
+    </div>
+  </main>
 
 </div>

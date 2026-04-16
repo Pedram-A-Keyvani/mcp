@@ -11,7 +11,8 @@ import { portalState } from '../portal.state';
       <div class="actions">
         @for (a of actions; track a.id) {
           <button (click)="select(a)" [class.selected]="a.id === portalState.action()?.id">
-            {{ a.label }}
+            <span class="method" [attr.data-method]="a.method?.toLowerCase()">{{ a.method }}</span>
+            <span class="label">{{ a.label }}</span>
           </button>
         }
       </div>

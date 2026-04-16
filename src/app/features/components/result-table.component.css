@@ -5,7 +5,10 @@
    ───────────────────────────────────────────────────── */
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
   font-family: var(--font-body);
   color: var(--text-primary);
 }
@@ -104,6 +107,10 @@
 
 /* ── Table ───────────────────────────────────────────── */
 .table-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius-md);
   background: var(--surface-1);
   border: 1px solid var(--border-dim);
@@ -139,11 +146,11 @@
 
 .meta .divider { color: var(--text-dim); margin: 0 4px; }
 
-/* Scroll container — horizontal for wide tables */
+/* Scroll container — fills remaining flex space, scrolls both axes */
 .scroll {
-  overflow-x: auto;
-  max-height: 520px;
-  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
 }
 
 table {
